@@ -1,0 +1,22 @@
+Name: user-api
+Host: 0.0.0.0
+Port: 3004
+Mode: dev
+
+JwtAuth:
+  AccessSecret: "test-key"
+  AccessExpire: 86400
+
+Log:
+  ServiceName: user-api
+#  Mode: volume
+  Encoding: plain
+  Path: logs
+  Level: error
+  TimeFormat: "2006-01-02 15:04:05"
+
+# user RPC
+UserRpcConf:
+  Endpoints:
+    - 127.0.0.1:2004
+  NonBlock: true

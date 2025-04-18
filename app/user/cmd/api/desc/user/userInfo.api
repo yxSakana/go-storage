@@ -1,0 +1,47 @@
+syntax = "v1"
+
+info(
+  title: "用户信息"
+  desc: "用户信息"
+  author: ""
+  email: ""
+  version: ""
+)
+
+type User {
+  Id int64 `json:"id"`
+  Username string `json:"username"`
+  Email string `json:"email"`
+  Mobile string `json:"mobile"`
+  Avatar string `json:"avatar"`
+//  Status
+}
+
+type RegisterReq {
+  Mobile string `json:"mobile"`
+  Password string `json:"password"`
+}
+type RegisterResp {
+  UserId int64 `json:"user_id"`
+  Token string `json:"token"`
+  ExpireAfter int64 `json:expire_after`
+  RefreshAfter int64 `json:refresh_after`
+}
+
+type LoginReq {
+  Mobile string `json:"mobile"`
+  Password string `json:"password"`
+}
+type LoginResp {
+  UserId int64 `json:"user_id"`
+  Token string `json:"token"`
+  ExpireAfter int64 `json:expire_after`
+  RefreshAfter int64 `json:refresh_after`
+}
+
+type GetUserInfoReq {
+  UserId int64 `json:"user_id"`
+}
+type GetUserInfoResp {
+  UserInfo User `json:"user_info"`
+}

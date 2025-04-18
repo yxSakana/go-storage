@@ -1,0 +1,118 @@
+# Air 的配置文件（TOML 格式）
+# 参考：https://github.com/air-verse/air
+
+# 设置工作目录（项目根目录）
+# 可以是 "."（当前目录）或绝对路径
+root = "."
+
+# 临时目录，存放编译生成的二进制文件（建议忽略 git）
+tmp_dir = "tmp"
+
+[build]
+# 构建前要执行的命令数组（支持多个）
+pre_cmd = ["echo 'hello air' > pre_cmd.txt"]
+
+# 构建命令（你也可以用 make、go run）
+cmd = "go build -o ./tmp/main ."
+
+# Ctrl+C 停止程序后执行的命令（如清理、通知等）
+post_cmd = ["echo 'hello air' > post_cmd.txt"]
+
+# 编译出来的二进制路径，对应上面的 cmd 的输出
+bin = "tmp/main"
+
+# 启动程序时完整的命令（可配置 ENV 环境变量）
+full_bin = "APP_ENV=dev APP_USER=air ./tmp/main"
+
+# 给 binary 添加的运行参数，相当于执行时加参数：./main hello world
+args_bin = ["hello", "world"]
+
+# 监听哪些扩展名的文件改动会触发重载
+include_ext = ["go", "tpl", "tmpl", "html"]
+
+# 忽略哪些目录（不会监听），建议排除缓存、依赖和构建目录
+exclude_dir = ["assets", "tmp", "vendor", "frontend/node_modules"]
+
+# 限定只监听哪些目录（不设置就监听全部）
+include_dir = []
+
+# 指定监听哪些文件（精确监听）
+include_file = []
+
+# 排除某些文件（精确排除）
+exclude_file = []
+
+# 用正则排除文件，示例排除了所有 *_test.go（单元测试文件）
+exclude_regex = ["_test\\.go"]
+
+# 排除内容未变但被保存的文件（自动保存时很有用）
+exclude_unchanged = true
+
+# 是否跟踪软链接目录（true 表示监听软链指向的真实目录）
+follow_symlink = true
+
+# 日志输出位置，air 会将构建/运行日志写入该文件
+log = "air.log"
+
+# 是否启用轮询模式监听文件改动（默认用 fsnotify）
+poll = false
+
+# 轮询时间间隔（单位：ms），适用于 poll = true 的情况
+poll_interval = 500
+
+# 文件变动后延迟多久再触发构建（防止频繁自动保存触发重启）
+delay = 0 # 推荐设置为 1000（1 秒）
+
+# 编译失败时是否停止旧进程（建议为 true，避免运行旧代码）
+stop_on_error = true
+
+# 杀进程前是否先发送中断信号（Unix 有效，Windows 无效）
+send_interrupt = false
+
+# 发送中断信号后的延迟（单位：纳秒）
+kill_delay = 500
+
+# 每次是否重复运行（可用于守护型命令）
+rerun = false
+
+# 每次执行完后的延迟间隔（单位：ms）
+rerun_delay = 500
+
+[log]
+# 是否显示日志时间戳
+time = false
+
+# 只显示主程序输出，隐藏构建/监听日志
+main_only = false
+
+# 完全静默模式（不输出任何日志）
+silent = false
+
+[color]
+# 不同模块的颜色配置，控制日志输出颜色
+main = "magenta"
+watcher = "cyan"
+build = "yellow"
+runner = "green"
+
+[misc]
+# 退出 air 时是否删除 tmp 目录（保持干净）
+clean_on_exit = true
+
+[screen]
+# 每次构建是否清屏（建议为 true，控制台更清爽）
+clear_on_rebuild = true
+
+# 保留控制台滚动条（false 会清掉所有历史日志）
+keep_scroll = true
+
+[proxy]
+# 实验性功能：是否启用浏览器热刷新（常用于 Web 项目）
+enabled = true
+
+# Air 的代理监听端口（用于注入 live reload 脚本）
+proxy_port = 8090
+
+# 你的 Go 服务真正监听的端口（Air 会感知变化刷新浏览器）
+app_port = 8080
+

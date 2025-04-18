@@ -1,0 +1,39 @@
+syntax = "v1"
+
+info (
+	title:   "用户`"
+	desc:    "用户"
+	author:  ""
+	email:   ""
+	version: ""
+)
+
+import (
+	"user/userInfo.api"
+)
+
+@server (
+	prefix: /v1/user
+	group:  user
+)
+service user {
+	@doc "register"
+	@handler register
+	post /register (RegisterReq) returns (RegisterResp)
+
+	@doc "login"
+	@handler login
+	post /login (LoginReq) returns (LoginResp)
+}
+
+@server (
+	prefix: /v1/user
+	group:  user
+	jwt:    JwtAuth
+)
+service user {
+	@doc "get user info"
+	@handler detail
+	get /detail (GetUserInfoReq) returns (GetUserInfoResp)
+}
+

@@ -1,0 +1,26 @@
+Name: user.rpc
+ListenOn: 0.0.0.0:2004
+Mode: dev
+
+JwtAuth:
+  AccessSecret: "test-key"
+  AccessExpire: 86400
+
+Log:
+  ServiceName: user-rpc
+  Level: error
+
+DB:
+  # @see: https://github.com/go-sql-driver/mysql#dsn-data-source-name
+  # [username[:password]@][protocol[(address)]]/dbname[?param1=value1&...&paramN=valueN]
+  # username:password@protocol(address)/dbname?k=v
+  DataSource: "mysql:aaa@tcp(127.0.0.1:3306)/go_storage?charset=utf8mb4&parseTime=true" # parseTime=true保证能解析时间
+Cache:
+  - Host: 127.0.0.1:6379
+    Pass: ""
+    Type: node
+
+#Etcd:
+#  Hosts:
+#  - 127.0.0.1:2379
+#  Key: user.rpc
