@@ -1,0 +1,35 @@
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:17.9.7-ce.0
+    container_name: gs-gitlab
+    restart: always
+    hostname: '192.168.7.162'
+    environment:
+      TZ: "Asia/ShangHai"
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://192.168.7.162:8929'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2222
+    ports:
+      - "80:80"
+      - "443:443"
+      - "2222:22"
+      - "8929:8929"
+    volumes:
+      - "../../data/gitlab/config:/etc/gitlab"
+      - "../../data/gitlab/logs:/var/log/gitlab"
+      - "../../data/gitlab/data:/var/opt/gitlab"
+    shm_size: "256m" # 共享内存大小; 类似还有mem_limit: 总内存, memswap_limit: 总内存+swap
+
+  jenkins:
+    image: jenkins/jenkins:2.507
+    container_name: gs-jenkins
+    restart: always
+    environment:
+      - TZ=Asia/ShangHai
+    user: root
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - "../../data/jenkins/data:/var/jenkins_home"
+      - "../../data/jenkins/certs:/certs/client:ro"

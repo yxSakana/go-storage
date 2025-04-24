@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"google.golang.org/grpc/codes"
 	"net/http"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
 	"go-storage/pkg/gserr"
@@ -32,6 +32,9 @@ func HttpResult(ctx context.Context, w http.ResponseWriter, resp interface{}, er
 			Data: resp,
 		})
 		return
+	} else {
+		code = gserr.ServerCommonError
+		msg = err.Error()
 	}
 
 	// 自定义错误
@@ -39,6 +42,9 @@ func HttpResult(ctx context.Context, w http.ResponseWriter, resp interface{}, er
 	if errors.As(err, &errToHttp) {
 		code = errToHttp.Code()
 		msg = errToHttp.Message()
+		if errors.Is(errToHttp, gserr.ErrAttachedMsgError) {
+			msg = err.Error()
+		}
 	}
 
 	// RPC错误
@@ -59,6 +65,7 @@ func HttpResult(ctx context.Context, w http.ResponseWriter, resp interface{}, er
 }
 
 func ParamError(ctx context.Context, w http.ResponseWriter, err error) {
+	logx.WithContext(ctx).Errorf("[API-ERROR]: %v", err)
 	errToHttp := gserr.ErrRequestParam
 	httpx.WriteJson(w, http.StatusBadRequest, Response{
 		Code: errToHttp.Code(),

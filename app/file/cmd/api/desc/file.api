@@ -1,0 +1,60 @@
+syntax = "v1"
+
+info (
+	title:   "文件元信息"
+	desc:    "文件元信息"
+	author:  ""
+	email:   ""
+	version: ""
+)
+
+import (
+	"types/meta.api"
+	"types/upload.api"
+	"types/download.api"
+)
+
+@server (
+	prefix: api/v1/file
+	group:  fileMeta
+	jwt:    JwtAuth
+)
+service file {
+	@doc "文件秒传通过hash值判断文件是否存在实现"
+	@handler quickTransmission
+	post /upload/quick_transmission (QuickTransmissionReq) returns (QuickTransmissionResp)
+
+	@doc "文件元信息初始化"
+	@handler initFileMeta
+	post /meta/init (InitFileMetaReq) returns (InitFileMetaResp)
+
+	@doc "文件元信息设置"
+	@handler configurateFileMeta
+	post /meta/configure (ConfigurateFileMetaReq) returns (ConfigurateFileMetaResp)
+}
+
+// upload
+@server (
+	prefix: api/v1/file
+	group:  fileUpoad
+	jwt:    JwtAuth
+)
+service file {
+	@handler uploadChunk
+	post /upload/chunk (UploadChunkReq) returns (UploadChunkResp)
+
+	@handler completeUpload
+	post /upload/complete (CompleteUploadReq) returns (CompleteUploadResp)
+}
+
+// download
+@server (
+	prefix: api/v1/file
+	group:  fileDownload
+	jwt:    JwtAuth
+)
+service file {
+	@handler downloadRange
+	post /download/range/:file_id (DownloadRangeReq) returns (DownloadRangeResp)
+}
+

@@ -1,0 +1,46 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  args_bin = ["-f cmd/api/etc/file.yaml"]
+  bin = "./tmp/file_meta-api"
+  cmd = "cd ../../ && go build -o app/file/tmp/file_meta-api -v app/file/cmd/api/file.go"
+  delay = 1000
+  exclude_dir = ["tmp", "cmd/api/internal/types"]
+  exclude_file = ["cmd/api/internal/handler/routes.go"]
+  exclude_unchanged = true
+  include_ext = ["go", "api", "yaml", "tpl", "tmpl", "html"]
+  include_dir = []
+  include_file = []
+  kill_delay = "0s"
+  log = "build-errors.log"
+  pre_cmd = [
+    "goctl model mysql ddl --src '../../deploy/sql/gs_file_meta.sql' --dir model --prefix=gzt_cache --style=goZero --cache=true --home=../../deploy/template/goctl",
+    "cd cmd/api/desc && goctl api go -api ./*.api --dir=../. --style=goZero --home=../../../../../deploy/template/goctl"
+  ]
+  send_interrupt = true
+  stop_on_error = false
+
+[color]
+  app = ""
+  build = "yellow"
+  main = "magenta"
+  runner = "green"
+  watcher = "cyan"
+
+[log]
+  main_only = false
+  silent = false
+  time = false
+
+[misc]
+  clean_on_exit = false
+
+[proxy]
+  app_port = 0
+  enabled = false
+  proxy_port = 0
+
+[screen]
+  clear_on_rebuild = true
+  keep_scroll = true

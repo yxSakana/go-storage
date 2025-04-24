@@ -1,5 +1,18 @@
 # Go-Storage
 
+## Port
+
+- user-api: 5001 4001
+- user-rpc: 5002 4002
+- file-api: 5003 4003
+- mysql: 3306
+- redis: 6379
+- elasticsearch: 9200 9300
+- kibana: 5601   -- ui
+- jaeger: 16686 4317 14268 4318 5778 9411 -- ui
+- prometheus: 9090 -- ui
+- grafana: 3000 -- ui
+
 ## Feature
 
 - [x] 账号管理

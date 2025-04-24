@@ -1,0 +1,3 @@
+#!/bin/bash
+
+goctl model mysql ddl --src "$1" --dir model --prefix=gzt_cache --style=goZero --cache=true

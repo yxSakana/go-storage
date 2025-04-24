@@ -46,7 +46,7 @@ func (l *RegisterLogic) Register(in *pb.RegisterReq) (*pb.RegisterResp, error) {
 	}
 
 	user := &model.User{
-		Username: "",
+		Username: "", // TODO: 生成/req
 		Mobile:   in.Mobile,
 		Password: pwd,
 	}

@@ -1,0 +1,15 @@
+syntax = "v1"
+
+info(
+  title: "下载"
+  desc: "文件下载"
+  author: ""
+  email: ""
+  version: ""
+)
+
+type DownloadRangeReq {
+  FileId uint64 `path:"file_id"`
+}
+type DownloadRangeResp {
+}

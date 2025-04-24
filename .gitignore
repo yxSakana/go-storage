@@ -3,4 +3,6 @@
 log/
 logs/
 tmp/
+data/
+deploy/harbor*
 *.rdb

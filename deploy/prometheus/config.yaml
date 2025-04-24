@@ -1,0 +1,35 @@
+global:
+  scrape_interval: 15s # By default, scrape targets every 15 seconds.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds.
+  external_labels:
+    monitor: 'codelab-monitor'
+
+scrape_configs:
+  - job_name: "prometheus"
+    scrape_interval: 5s
+    static_configs:
+      - targets: ["127.0.0.1:9090"]
+
+  - job_name: "user-api"
+    static_configs:
+      - targets: ["go-storage:4001"]
+        labels:
+          job: user-api
+          app: user-api
+          env: dev
+
+  - job_name: "user-rpc"
+    static_configs:
+      - targets: ["go-storage:4002"]
+        labels:
+          job: user-rpc
+          app: user-rpc
+          env: dev
+
+  - job_name: "file-api"
+    static_configs:
+      - targets: ["go-storage:4003"]
+        labels:
+          job: file-api
+          app: file-api
+          env: dev

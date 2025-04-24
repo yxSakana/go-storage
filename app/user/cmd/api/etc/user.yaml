@@ -1,11 +1,11 @@
 Name: user-api
 Host: 0.0.0.0
-Port: 3004
+Port: 5001
 Mode: dev
 
 JwtAuth:
   AccessSecret: "test-key"
-  AccessExpire: 86400
+  AccessExpire: 2592000
 
 Log:
   ServiceName: user-api
@@ -15,8 +15,19 @@ Log:
   Level: error
   TimeFormat: "2006-01-02 15:04:05"
 
+Telemetry:
+  Name: file-api
+  Endpoint: http://go-storage:14268/api/traces
+  Sampler: 1.0
+  Batcher: jaeger
+
+Prometheus:
+  Host: 0.0.0.0
+  Port: 4001
+  Path: /metrics
+
 # user RPC
 UserRpcConf:
   Endpoints:
-    - 127.0.0.1:2004
+    - go-storage:5002
   NonBlock: true
