@@ -43,8 +43,8 @@
 ## Feature
 
 - [x] 账号管理
-- [x] 文件秒传
-- [x] 断点续传
+- [x] 文件秒传 - 通过对比hash值实现
+- [x] 断点续传 - 通过分块上传实现
 - [x] 分块上传
 - [x] 文件下载
 - [x] 微服务架构
@@ -73,11 +73,11 @@ docker compose -f ./deploy/docker/compose.yaml up -d
 - FileStorage
   - MinIO
 - 日志系统
-  - [x] Filebeat
+  - Filebeat
   - Logstash
   - kafka
-  - [x] elasticsearch
-  - [x] kibana
+  - elasticsearch
+  - kibana
 - 系统监控
   - [x] Prometheus
   - Grafana

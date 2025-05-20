@@ -19,6 +19,7 @@ services:
       - "../../data/gitlab/logs:/var/log/gitlab"
       - "../../data/gitlab/data:/var/opt/gitlab"
     shm_size: "256m" # 共享内存大小; 类似还有mem_limit: 总内存, memswap_limit: 总内存+swap
+    mem_limit: 5g
 
   jenkins:
     image: jenkins/jenkins:2.507

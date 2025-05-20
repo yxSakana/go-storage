@@ -14,7 +14,7 @@ Log:
 
 Telemetry:
   Name: file-api
-  Endpoint: http://go-storage:14268/api/traces
+  Endpoint: http://127.0.0.1:14268/api/traces
   Sampler: 1.0
   Batcher: jaeger
 
@@ -29,13 +29,13 @@ JwtAuth:
   AccessSecret: "test-key"
 
 Redis:
-  Host: redis:6379
+  Host: 127.0.0.1:6379
   Pass: ""
   Type: node
 
 DB:
-  DataSource: "mysql:aaa@tcp(database:3306)/go_storage?charset=utf8mb4&parseTime=true" # parseTime=true保证能解析时间
+  DataSource: "mysql:aaa@tcp(127.0.0.1:3306)/go_storage?charset=utf8mb4&parseTime=true" # parseTime=true保证能解析时间
 Cache:
-  - Host: redis:6379
+  - Host: 127.0.0.1:6379
     Pass: ""
     Type: node

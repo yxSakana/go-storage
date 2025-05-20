@@ -7,6 +7,7 @@
 
 # or loads/alpine:3.8
 FROM golang:latest
+#FROM golang:latest AS builder
 
 ENV GOPROXY=https://goproxy.cn,direct
 
@@ -16,4 +17,5 @@ ADD . ${WORKDIR}/
 
 RUN go install github.com/cortesi/modd/cmd/modd@latest && go install github.com/air-verse/air@latest && go mod tidy
 
+#FROM alpine:latest
 ENTRYPOINT ["modd"]

@@ -5,9 +5,7 @@ import (
 )
 
 const (
-	CacheMetaKeyf  string = "gsCache:upload:%s:meta"
-	CacheChunkKeyf string = "gsCache:upload:%s:chunk"
-	ChunkDirf      string = "/tmp/uploads/chunk/%s"
+	ChunkDirf string = "/tmp/uploads/chunk/%s"
 )
 
 type UploadChunkInput struct {

@@ -29,11 +29,7 @@ func UploadChunkHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 				return
 			}
 			logicInput = types.UploadChunkInput{
-				UploadChunkReq: types.UploadChunkReq{
-					FileId:     req.FileId,
-					ChunkIndex: req.ChunkIndex,
-					ChunkSize:  req.ChunkSize,
-				},
+				UploadChunkReq:  req,
 				ChunkFileHeader: chunkFiles[0],
 			}
 		} else {

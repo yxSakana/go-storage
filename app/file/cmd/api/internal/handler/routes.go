@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	fileDownload "go-storage/app/file/cmd/api/internal/handler/fileDownload"
-	fileMeta "go-storage/app/file/cmd/api/internal/handler/fileMeta"
 	fileUpoad "go-storage/app/file/cmd/api/internal/handler/fileUpoad"
 	"go-storage/app/file/cmd/api/internal/svc"
 
@@ -30,39 +29,28 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
-				// 文件元信息设置
-				Method:  http.MethodPost,
-				Path:    "/meta/configure",
-				Handler: fileMeta.ConfigurateFileMetaHandler(serverCtx),
-			},
-			{
-				// 文件元信息初始化
-				Method:  http.MethodPost,
-				Path:    "/meta/init",
-				Handler: fileMeta.InitFileMetaHandler(serverCtx),
-			},
-			{
-				// 文件秒传通过hash值判断文件是否存在实现
-				Method:  http.MethodPost,
-				Path:    "/upload/quick_transmission",
-				Handler: fileMeta.QuickTransmissionHandler(serverCtx),
-			},
-		},
-		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
-		rest.WithPrefix("/api/v1/file"),
-	)
-
-	server.AddRoutes(
-		[]rest.Route{
-			{
+				// 上传文件分块
 				Method:  http.MethodPost,
 				Path:    "/upload/chunk",
 				Handler: fileUpoad.UploadChunkHandler(serverCtx),
 			},
 			{
+				// 合并文件分块
 				Method:  http.MethodPost,
 				Path:    "/upload/complete",
 				Handler: fileUpoad.CompleteUploadHandler(serverCtx),
+			},
+			{
+				// 文件元信息初始化
+				Method:  http.MethodPost,
+				Path:    "/upload/init",
+				Handler: fileUpoad.InitFileMetaHandler(serverCtx),
+			},
+			{
+				// 文件秒传通过hash值判断文件是否存在实现
+				Method:  http.MethodPost,
+				Path:    "/upload/quick_transmission",
+				Handler: fileUpoad.QuickTransmissionHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),

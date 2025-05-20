@@ -14,9 +14,10 @@ import (
 	"types/download.api"
 )
 
+// upload
 @server (
 	prefix: api/v1/file
-	group:  fileMeta
+	group:  fileUpoad
 	jwt:    JwtAuth
 )
 service file {
@@ -26,23 +27,13 @@ service file {
 
 	@doc "文件元信息初始化"
 	@handler initFileMeta
-	post /meta/init (InitFileMetaReq) returns (InitFileMetaResp)
+	post /upload/init (InitFileMetaReq) returns (InitFileMetaResp)
 
-	@doc "文件元信息设置"
-	@handler configurateFileMeta
-	post /meta/configure (ConfigurateFileMetaReq) returns (ConfigurateFileMetaResp)
-}
-
-// upload
-@server (
-	prefix: api/v1/file
-	group:  fileUpoad
-	jwt:    JwtAuth
-)
-service file {
+	@doc "上传文件分块"
 	@handler uploadChunk
 	post /upload/chunk (UploadChunkReq) returns (UploadChunkResp)
 
+	@doc "合并文件分块"
 	@handler completeUpload
 	post /upload/complete (CompleteUploadReq) returns (CompleteUploadResp)
 }

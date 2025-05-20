@@ -4,20 +4,10 @@
 package types
 
 type CompleteUploadReq struct {
-	FileId string `json:"file_id"`
+	FileHash string `json:"file_hash"`
 }
 
 type CompleteUploadResp struct {
-}
-
-type ConfigurateFileMetaReq struct {
-	Hash   string `json:"hash"`
-	Size   int64  `json:"size"`
-	Status int    `json:"status"`
-}
-
-type ConfigurateFileMetaResp struct {
-	Id uint64 `json:"id"`
 }
 
 type DownloadRangeReq struct {
@@ -44,14 +34,14 @@ type FileUesrRelation struct {
 }
 
 type InitFileMetaReq struct {
-	FilenameAlias string `json:"filename_alias"`
 	Hash          string `json:"hash"`
 	FileSize      uint64 `json:"file_size"`
 	ChunkSize     uint64 `json:"chunk_size"`
+	FilenameAlias string `json:"filename_alias"`
 }
 
 type InitFileMetaResp struct {
-	Id         string `json:"id"`
+	Hash       string `json:"hash"`
 	ChunkSize  uint64 `json:"chunk_size"`
 	ChunkCount int    `json:"chunk_count"`
 }
@@ -65,9 +55,10 @@ type QuickTransmissionResp struct {
 }
 
 type UploadChunkReq struct {
-	FileId     string `form:"file_id"`
+	FileHash   string `form:"file_hash"`
 	ChunkIndex int    `form:"chunk_index"`
-	ChunkSize  uint64 `form:chunk_size`
+	ChunkSize  uint64 `form:"chunk_size"`
+	ChunkHash  string `form:"chunk_hash"`
 }
 
 type UploadChunkResp struct {

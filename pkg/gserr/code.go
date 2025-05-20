@@ -17,6 +17,7 @@ const (
 	fileUploadRequiredError    uint32 = 100201
 	fileMetaUninitializedError uint32 = 100202
 	fileIncompleteChunkError   uint32 = 100203
+	fileHashIncompleteError    uint32 = 100204
 )
 
 var errMsgMap = map[uint32]string{
@@ -32,6 +33,7 @@ var errMsgMap = map[uint32]string{
 	fileUploadRequiredError:    "文件记录不存在，需要上传文件",
 	fileMetaUninitializedError: "文件信息未初始化",
 	fileIncompleteChunkError:   "分片不完整",
+	fileHashIncompleteError:    "hash不正确",
 }
 
 var (
@@ -46,6 +48,7 @@ var (
 	ErrFileUpload            = New(fileUploadRequiredError, errMsgMap[fileUploadRequiredError])
 	ErrFileMetaUninitialized = New(fileMetaUninitializedError, errMsgMap[fileMetaUninitializedError])
 	ErrFileIncompleteChunk   = New(fileIncompleteChunkError, errMsgMap[fileIncompleteChunkError])
+	ErrFileHashIncomplete    = New(fileHashIncompleteError, errMsgMap[fileHashIncompleteError])
 )
 
 func MsgFromCode(code uint32) (msg string, ok bool) {
