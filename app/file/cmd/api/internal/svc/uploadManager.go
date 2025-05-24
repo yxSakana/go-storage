@@ -75,9 +75,7 @@ type uploadManager struct {
 }
 
 func NewUploadManager(c *redis.Redis) UploadManager {
-	return &uploadManager{
-		rdb: c,
-	}
+	return &uploadManager{rdb: c}
 }
 
 var _ UploadManager = (*uploadManager)(nil)

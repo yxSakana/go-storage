@@ -27,7 +27,7 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 
 func (l *LoginLogic) Login(in *pb.LoginReq) (*pb.LoginResp, error) {
 	// query Mobile
-	user, err := l.svcCtx.UserModel.FindOneByMobile(l.ctx, in.Mobile)
+	user, err := l.svcCtx.UserModel.FindOneByEmail(l.ctx, in.Email)
 	if err != nil || user == nil {
 		return nil, fmt.Errorf("login: %w", err)
 	}

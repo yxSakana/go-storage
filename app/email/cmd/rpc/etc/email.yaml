@@ -1,0 +1,13 @@
+Name: email.rpc
+ListenOn: 0.0.0.0:5004
+#Etcd:
+#  Hosts:
+#  - 127.0.0.1:2379
+#  Key: email.rpc
+
+EmailConfig:
+  Host: 127.0.0.1
+  Port: 1025
+  Username: admin
+  Password: ""
+  From: "admin@test.com"

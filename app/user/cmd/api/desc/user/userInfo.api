@@ -12,24 +12,29 @@ type User {
   Id int64 `json:"id"`
   Username string `json:"username"`
   Email string `json:"email"`
-  Mobile string `json:"mobile"`
+//  Mobile string `json:"mobile"`
   Avatar string `json:"avatar"`
 //  Status
 }
 
 type RegisterReq {
-  Mobile string `json:"mobile"`
+  Email string `json:"email"`
   Password string `json:"password"`
 }
-type RegisterResp {
-  UserId int64 `json:"user_id"`
-  Token string `json:"token"`
-  ExpireAfter int64 `json:expire_after`
-  RefreshAfter int64 `json:refresh_after`
+type RegisterResp {}
+
+type ResendActivateEmailReq {
+  Email string `json:"email"`
 }
+type ResendActivateEmailResp {}
+
+type ActivateReq {
+  VerifyToken string `form:"token"`
+}
+type ActivateResp {}
 
 type LoginReq {
-  Mobile string `json:"mobile"`
+  Email string `json:"email"`
   Password string `json:"password"`
 }
 type LoginResp {

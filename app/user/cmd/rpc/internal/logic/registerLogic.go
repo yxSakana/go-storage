@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
+	"github.com/google/uuid"
 	"github.com/zeromicro/go-zero/core/logx"
 
 	"go-storage/app/user/cmd/rpc/internal/svc"
@@ -29,48 +31,36 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 }
 
 func (l *RegisterLogic) Register(in *pb.RegisterReq) (*pb.RegisterResp, error) {
-	// 通过 Mobile 查看数据库中是否已存在
-	userRet, err := l.svcCtx.UserModel.FindOneByMobile(l.ctx, in.Mobile)
+	// 确保email不存在
+	userRet, err := l.svcCtx.UserModel.FindOneByEmail(l.ctx, in.Email)
 	if err != nil && !errors.Is(err, model.ErrNotFound) {
-		return nil, fmt.Errorf("%w: user(mobile: %s) register: %w", gserr.ErrServerCommon, in.Mobile, err)
+		return nil, fmt.Errorf("%w: user(Email: %s) register: %w", gserr.ErrServerCommon, in.Email, err)
 	}
 	if userRet != nil {
-		return nil, fmt.Errorf("%w: user has been resgister: mobile(%s) is exists", gserr.ErrUserExist, in.Mobile)
+		return nil, fmt.Errorf("%w: user has been resgister: Email(%s) is exists", gserr.ErrUserExist, in.Email)
 	}
-
-	// 不存在记录时，插入新记录
-	// 对密码进行加密处理
+	if l.svcCtx.RegisterCache.Exist(in.Email) {
+		return nil, fmt.Errorf("%w: user(Email: %s) is exists", gserr.ErrUserExist, in.Email)
+	}
+	// 暂存到redis: email, code, password
+	// TODO: 确保email格式合法
 	pwd, err := crypto.EncryptedPassword(in.Password)
 	if err != nil {
 		return nil, fmt.Errorf("encrypt password failed: %w", err)
 	}
 
-	user := &model.User{
-		Username: "", // TODO: 生成/req
-		Mobile:   in.Mobile,
+	info := svc.RegisterCacheInfo{
+		Email:    in.Email,
 		Password: pwd,
+		Token:    uuid.NewString(),
 	}
-	ret, err := l.svcCtx.UserModel.Insert(l.ctx, user)
-	if err != nil {
-		return nil, fmt.Errorf("user(%s) register failed: %v", in.Mobile, err)
+	if err := l.svcCtx.RegisterCache.Save(l.ctx, &info); err != nil {
+		return nil, fmt.Errorf("register cache failed: %w", err)
 	}
+	// 发送激活链接
+	exp := time.Duration(svc.CacheRegisterInfoExpireSec) * time.Second
+	sl := NewSendActivateEmailLogic(l.ctx, l.svcCtx)
+	err = sl.Send(info, exp, l.svcCtx.Config.JwtAuth.AccessSecret)
 
-	uid, err := ret.LastInsertId()
-	if err != nil {
-		return nil, fmt.Errorf("user(%s) register failed: %v", in.Mobile, err)
-	}
-
-	// Token
-	generateTokenLogic := NewGenerateTokenLogic(l.ctx, l.svcCtx)
-	tokenResp, err := generateTokenLogic.GenerateToken(&pb.GenerateTokenReq{UserId: uid})
-	if err != nil {
-		return nil, fmt.Errorf("generate token failed: %w", err)
-	}
-
-	return &pb.RegisterResp{
-		UserId:       uid,
-		Token:        tokenResp.Token,
-		ExpireAfter:  tokenResp.ExpireAfter,
-		RefreshAfter: tokenResp.RefreshAfter,
-	}, nil
+	return &pb.RegisterResp{}, err
 }

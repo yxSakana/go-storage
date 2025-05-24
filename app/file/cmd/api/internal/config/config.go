@@ -13,7 +13,7 @@ type Config struct {
 		AccessSecret string
 	}
 
-	Redis redis.RedisConf
+	RedisConf redis.RedisConf
 
 	DB struct {
 		DataSource string

@@ -27,8 +27,7 @@ type User struct {
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id"`
 	Username      string                 `protobuf:"bytes,2,opt,name=username,proto3" json:"username"`
 	Email         string                 `protobuf:"bytes,3,opt,name=email,proto3" json:"email"`
-	Mobile        string                 `protobuf:"bytes,4,opt,name=mobile,proto3" json:"mobile"`
-	Avatar        string                 `protobuf:"bytes,5,opt,name=avatar,proto3" json:"avatar"`
+	Avatar        string                 `protobuf:"bytes,4,opt,name=avatar,proto3" json:"avatar"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -84,13 +83,6 @@ func (x *User) GetEmail() string {
 	return ""
 }
 
-func (x *User) GetMobile() string {
-	if x != nil {
-		return x.Mobile
-	}
-	return ""
-}
-
 func (x *User) GetAvatar() string {
 	if x != nil {
 		return x.Avatar
@@ -101,7 +93,7 @@ func (x *User) GetAvatar() string {
 // -- Req Resp --
 type RegisterReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Mobile        string                 `protobuf:"bytes,1,opt,name=mobile,proto3" json:"mobile"`
+	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email"`
 	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -137,9 +129,9 @@ func (*RegisterReq) Descriptor() ([]byte, []int) {
 	return file_user_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *RegisterReq) GetMobile() string {
+func (x *RegisterReq) GetEmail() string {
 	if x != nil {
-		return x.Mobile
+		return x.Email
 	}
 	return ""
 }
@@ -153,10 +145,6 @@ func (x *RegisterReq) GetPassword() string {
 
 type RegisterResp struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        int64                  `protobuf:"varint,1,opt,name=userId,proto3" json:"userId"`
-	Token         string                 `protobuf:"bytes,2,opt,name=token,proto3" json:"token"`
-	ExpireAfter   int64                  `protobuf:"varint,3,opt,name=expireAfter,proto3" json:"expireAfter"`
-	RefreshAfter  int64                  `protobuf:"varint,4,opt,name=refreshAfter,proto3" json:"refreshAfter"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -191,37 +179,9 @@ func (*RegisterResp) Descriptor() ([]byte, []int) {
 	return file_user_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *RegisterResp) GetUserId() int64 {
-	if x != nil {
-		return x.UserId
-	}
-	return 0
-}
-
-func (x *RegisterResp) GetToken() string {
-	if x != nil {
-		return x.Token
-	}
-	return ""
-}
-
-func (x *RegisterResp) GetExpireAfter() int64 {
-	if x != nil {
-		return x.ExpireAfter
-	}
-	return 0
-}
-
-func (x *RegisterResp) GetRefreshAfter() int64 {
-	if x != nil {
-		return x.RefreshAfter
-	}
-	return 0
-}
-
 type LoginReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Mobile        string                 `protobuf:"bytes,1,opt,name=mobile,proto3" json:"mobile"`
+	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email"`
 	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -257,9 +217,9 @@ func (*LoginReq) Descriptor() ([]byte, []int) {
 	return file_user_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *LoginReq) GetMobile() string {
+func (x *LoginReq) GetEmail() string {
 	if x != nil {
-		return x.Mobile
+		return x.Email
 	}
 	return ""
 }
@@ -531,28 +491,183 @@ func (x *GenerateTokenResp) GetRefreshAfter() int64 {
 	return 0
 }
 
+type ActivateAccountReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VerifyToken   string                 `protobuf:"bytes,1,opt,name=verifyToken,proto3" json:"verifyToken"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ActivateAccountReq) Reset() {
+	*x = ActivateAccountReq{}
+	mi := &file_user_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ActivateAccountReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ActivateAccountReq) ProtoMessage() {}
+
+func (x *ActivateAccountReq) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ActivateAccountReq.ProtoReflect.Descriptor instead.
+func (*ActivateAccountReq) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *ActivateAccountReq) GetVerifyToken() string {
+	if x != nil {
+		return x.VerifyToken
+	}
+	return ""
+}
+
+type ActivateAccountResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ActivateAccountResp) Reset() {
+	*x = ActivateAccountResp{}
+	mi := &file_user_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ActivateAccountResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ActivateAccountResp) ProtoMessage() {}
+
+func (x *ActivateAccountResp) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ActivateAccountResp.ProtoReflect.Descriptor instead.
+func (*ActivateAccountResp) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{10}
+}
+
+type SendActivateEmailReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SendActivateEmailReq) Reset() {
+	*x = SendActivateEmailReq{}
+	mi := &file_user_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SendActivateEmailReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SendActivateEmailReq) ProtoMessage() {}
+
+func (x *SendActivateEmailReq) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SendActivateEmailReq.ProtoReflect.Descriptor instead.
+func (*SendActivateEmailReq) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *SendActivateEmailReq) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+type SendActivateEmailResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SendActivateEmailResp) Reset() {
+	*x = SendActivateEmailResp{}
+	mi := &file_user_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SendActivateEmailResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SendActivateEmailResp) ProtoMessage() {}
+
+func (x *SendActivateEmailResp) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SendActivateEmailResp.ProtoReflect.Descriptor instead.
+func (*SendActivateEmailResp) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{12}
+}
+
 var File_user_proto protoreflect.FileDescriptor
 
 const file_user_proto_rawDesc = "" +
 	"\n" +
 	"\n" +
-	"user.proto\x12\x02pb\"x\n" +
+	"user.proto\x12\x02pb\"`\n" +
 	"\x04User\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1a\n" +
 	"\busername\x18\x02 \x01(\tR\busername\x12\x14\n" +
 	"\x05email\x18\x03 \x01(\tR\x05email\x12\x16\n" +
-	"\x06mobile\x18\x04 \x01(\tR\x06mobile\x12\x16\n" +
-	"\x06avatar\x18\x05 \x01(\tR\x06avatar\"A\n" +
-	"\vRegisterReq\x12\x16\n" +
-	"\x06mobile\x18\x01 \x01(\tR\x06mobile\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword\"\x82\x01\n" +
-	"\fRegisterResp\x12\x16\n" +
-	"\x06userId\x18\x01 \x01(\x03R\x06userId\x12\x14\n" +
-	"\x05token\x18\x02 \x01(\tR\x05token\x12 \n" +
-	"\vexpireAfter\x18\x03 \x01(\x03R\vexpireAfter\x12\"\n" +
-	"\frefreshAfter\x18\x04 \x01(\x03R\frefreshAfter\">\n" +
-	"\bLoginReq\x12\x16\n" +
-	"\x06mobile\x18\x01 \x01(\tR\x06mobile\x12\x1a\n" +
+	"\x06avatar\x18\x04 \x01(\tR\x06avatar\"?\n" +
+	"\vRegisterReq\x12\x14\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\"\x0e\n" +
+	"\fRegisterResp\"<\n" +
+	"\bLoginReq\x12\x14\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\"\x7f\n" +
 	"\tLoginResp\x12\x16\n" +
 	"\x06userId\x18\x01 \x01(\x03R\x06userId\x12\x14\n" +
@@ -568,12 +683,20 @@ const file_user_proto_rawDesc = "" +
 	"\x11GenerateTokenResp\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12 \n" +
 	"\vexpireAfter\x18\x02 \x01(\x03R\vexpireAfter\x12\"\n" +
-	"\frefreshAfter\x18\x03 \x01(\x03R\frefreshAfter2\xd1\x01\n" +
+	"\frefreshAfter\x18\x03 \x01(\x03R\frefreshAfter\"6\n" +
+	"\x12ActivateAccountReq\x12 \n" +
+	"\vverifyToken\x18\x01 \x01(\tR\vverifyToken\"\x15\n" +
+	"\x13ActivateAccountResp\",\n" +
+	"\x14SendActivateEmailReq\x12\x14\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\"\x17\n" +
+	"\x15SendActivateEmailResp2\xdf\x02\n" +
 	"\x04user\x12-\n" +
-	"\bregister\x12\x0f.pb.RegisterReq\x1a\x10.pb.RegisterResp\x12$\n" +
+	"\bregister\x12\x0f.pb.RegisterReq\x1a\x10.pb.RegisterResp\x12H\n" +
+	"\x11sendActivateEmail\x12\x18.pb.SendActivateEmailReq\x1a\x19.pb.SendActivateEmailResp\x12$\n" +
 	"\x05login\x12\f.pb.LoginReq\x1a\r.pb.LoginResp\x126\n" +
 	"\vgetUserInfo\x12\x12.pb.GetUserInfoReq\x1a\x13.pb.GetUserInfoResp\x12<\n" +
-	"\rgenerateToken\x12\x14.pb.GenerateTokenReq\x1a\x15.pb.GenerateTokenRespB\x06Z\x04./pbb\x06proto3"
+	"\rgenerateToken\x12\x14.pb.GenerateTokenReq\x1a\x15.pb.GenerateTokenResp\x12B\n" +
+	"\x0factivateAccount\x12\x16.pb.ActivateAccountReq\x1a\x17.pb.ActivateAccountRespB\x06Z\x04./pbb\x06proto3"
 
 var (
 	file_user_proto_rawDescOnce sync.Once
@@ -587,33 +710,41 @@ func file_user_proto_rawDescGZIP() []byte {
 	return file_user_proto_rawDescData
 }
 
-var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_user_proto_goTypes = []any{
-	(*User)(nil),              // 0: pb.User
-	(*RegisterReq)(nil),       // 1: pb.RegisterReq
-	(*RegisterResp)(nil),      // 2: pb.RegisterResp
-	(*LoginReq)(nil),          // 3: pb.LoginReq
-	(*LoginResp)(nil),         // 4: pb.LoginResp
-	(*GetUserInfoReq)(nil),    // 5: pb.GetUserInfoReq
-	(*GetUserInfoResp)(nil),   // 6: pb.GetUserInfoResp
-	(*GenerateTokenReq)(nil),  // 7: pb.GenerateTokenReq
-	(*GenerateTokenResp)(nil), // 8: pb.GenerateTokenResp
+	(*User)(nil),                  // 0: pb.User
+	(*RegisterReq)(nil),           // 1: pb.RegisterReq
+	(*RegisterResp)(nil),          // 2: pb.RegisterResp
+	(*LoginReq)(nil),              // 3: pb.LoginReq
+	(*LoginResp)(nil),             // 4: pb.LoginResp
+	(*GetUserInfoReq)(nil),        // 5: pb.GetUserInfoReq
+	(*GetUserInfoResp)(nil),       // 6: pb.GetUserInfoResp
+	(*GenerateTokenReq)(nil),      // 7: pb.GenerateTokenReq
+	(*GenerateTokenResp)(nil),     // 8: pb.GenerateTokenResp
+	(*ActivateAccountReq)(nil),    // 9: pb.ActivateAccountReq
+	(*ActivateAccountResp)(nil),   // 10: pb.ActivateAccountResp
+	(*SendActivateEmailReq)(nil),  // 11: pb.SendActivateEmailReq
+	(*SendActivateEmailResp)(nil), // 12: pb.SendActivateEmailResp
 }
 var file_user_proto_depIdxs = []int32{
-	0, // 0: pb.GetUserInfoResp.userinfo:type_name -> pb.User
-	1, // 1: pb.user.register:input_type -> pb.RegisterReq
-	3, // 2: pb.user.login:input_type -> pb.LoginReq
-	5, // 3: pb.user.getUserInfo:input_type -> pb.GetUserInfoReq
-	7, // 4: pb.user.generateToken:input_type -> pb.GenerateTokenReq
-	2, // 5: pb.user.register:output_type -> pb.RegisterResp
-	4, // 6: pb.user.login:output_type -> pb.LoginResp
-	6, // 7: pb.user.getUserInfo:output_type -> pb.GetUserInfoResp
-	8, // 8: pb.user.generateToken:output_type -> pb.GenerateTokenResp
-	5, // [5:9] is the sub-list for method output_type
-	1, // [1:5] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0,  // 0: pb.GetUserInfoResp.userinfo:type_name -> pb.User
+	1,  // 1: pb.user.register:input_type -> pb.RegisterReq
+	11, // 2: pb.user.sendActivateEmail:input_type -> pb.SendActivateEmailReq
+	3,  // 3: pb.user.login:input_type -> pb.LoginReq
+	5,  // 4: pb.user.getUserInfo:input_type -> pb.GetUserInfoReq
+	7,  // 5: pb.user.generateToken:input_type -> pb.GenerateTokenReq
+	9,  // 6: pb.user.activateAccount:input_type -> pb.ActivateAccountReq
+	2,  // 7: pb.user.register:output_type -> pb.RegisterResp
+	12, // 8: pb.user.sendActivateEmail:output_type -> pb.SendActivateEmailResp
+	4,  // 9: pb.user.login:output_type -> pb.LoginResp
+	6,  // 10: pb.user.getUserInfo:output_type -> pb.GetUserInfoResp
+	8,  // 11: pb.user.generateToken:output_type -> pb.GenerateTokenResp
+	10, // 12: pb.user.activateAccount:output_type -> pb.ActivateAccountResp
+	7,  // [7:13] is the sub-list for method output_type
+	1,  // [1:7] is the sub-list for method input_type
+	1,  // [1:1] is the sub-list for extension type_name
+	1,  // [1:1] is the sub-list for extension extendee
+	0,  // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_user_proto_init() }
@@ -627,7 +758,7 @@ func file_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_user_proto_rawDesc), len(file_user_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -28,7 +28,7 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 
 func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err error) {
 	loginResp, err := l.svcCtx.UserRpc.Login(l.ctx, &user.LoginReq{
-		Mobile:   req.Mobile,
+		Email:    req.Email,
 		Password: req.Password,
 	})
 	if err != nil {

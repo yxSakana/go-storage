@@ -16,6 +16,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
+				// activate
+				Method:  http.MethodGet,
+				Path:    "/activate",
+				Handler: user.ActivateHandler(serverCtx),
+			},
+			{
 				// login
 				Method:  http.MethodPost,
 				Path:    "/login",
@@ -27,8 +33,13 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/register",
 				Handler: user.RegisterHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/register/resend-email",
+				Handler: user.ResendActivateEmailHandler(serverCtx),
+			},
 		},
-		rest.WithPrefix("/v1/user"),
+		rest.WithPrefix("/api/v1/user"),
 	)
 
 	server.AddRoutes(
@@ -41,6 +52,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
-		rest.WithPrefix("/v1/user"),
+		rest.WithPrefix("/api/v1/user"),
 	)
 }

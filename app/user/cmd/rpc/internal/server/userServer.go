@@ -28,6 +28,11 @@ func (s *UserServer) Register(ctx context.Context, in *pb.RegisterReq) (*pb.Regi
 	return l.Register(in)
 }
 
+func (s *UserServer) SendActivateEmail(ctx context.Context, in *pb.SendActivateEmailReq) (*pb.SendActivateEmailResp, error) {
+	l := logic.NewSendActivateEmailLogic(ctx, s.svcCtx)
+	return l.SendActivateEmail(in)
+}
+
 func (s *UserServer) Login(ctx context.Context, in *pb.LoginReq) (*pb.LoginResp, error) {
 	l := logic.NewLoginLogic(ctx, s.svcCtx)
 	return l.Login(in)
@@ -41,4 +46,9 @@ func (s *UserServer) GetUserInfo(ctx context.Context, in *pb.GetUserInfoReq) (*p
 func (s *UserServer) GenerateToken(ctx context.Context, in *pb.GenerateTokenReq) (*pb.GenerateTokenResp, error) {
 	l := logic.NewGenerateTokenLogic(ctx, s.svcCtx)
 	return l.GenerateToken(in)
+}
+
+func (s *UserServer) ActivateAccount(ctx context.Context, in *pb.ActivateAccountReq) (*pb.ActivateAccountResp, error) {
+	l := logic.NewActivateAccountLogic(ctx, s.svcCtx)
+	return l.ActivateAccount(in)
 }

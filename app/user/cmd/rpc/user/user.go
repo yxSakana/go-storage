@@ -14,21 +14,27 @@ import (
 )
 
 type (
-	GenerateTokenReq  = pb.GenerateTokenReq
-	GenerateTokenResp = pb.GenerateTokenResp
-	GetUserInfoReq    = pb.GetUserInfoReq
-	GetUserInfoResp   = pb.GetUserInfoResp
-	LoginReq          = pb.LoginReq
-	LoginResp         = pb.LoginResp
-	RegisterReq       = pb.RegisterReq
-	RegisterResp      = pb.RegisterResp
-	User              = pb.User
+	ActivateAccountReq    = pb.ActivateAccountReq
+	ActivateAccountResp   = pb.ActivateAccountResp
+	GenerateTokenReq      = pb.GenerateTokenReq
+	GenerateTokenResp     = pb.GenerateTokenResp
+	GetUserInfoReq        = pb.GetUserInfoReq
+	GetUserInfoResp       = pb.GetUserInfoResp
+	LoginReq              = pb.LoginReq
+	LoginResp             = pb.LoginResp
+	RegisterReq           = pb.RegisterReq
+	RegisterResp          = pb.RegisterResp
+	SendActivateEmailReq  = pb.SendActivateEmailReq
+	SendActivateEmailResp = pb.SendActivateEmailResp
+	User                  = pb.User
 
 	UserZrpcClient interface {
 		Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error)
+		SendActivateEmail(ctx context.Context, in *SendActivateEmailReq, opts ...grpc.CallOption) (*SendActivateEmailResp, error)
 		Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
 		GetUserInfo(ctx context.Context, in *GetUserInfoReq, opts ...grpc.CallOption) (*GetUserInfoResp, error)
 		GenerateToken(ctx context.Context, in *GenerateTokenReq, opts ...grpc.CallOption) (*GenerateTokenResp, error)
+		ActivateAccount(ctx context.Context, in *ActivateAccountReq, opts ...grpc.CallOption) (*ActivateAccountResp, error)
 	}
 
 	defaultUserZrpcClient struct {
@@ -47,6 +53,11 @@ func (m *defaultUserZrpcClient) Register(ctx context.Context, in *RegisterReq, o
 	return client.Register(ctx, in, opts...)
 }
 
+func (m *defaultUserZrpcClient) SendActivateEmail(ctx context.Context, in *SendActivateEmailReq, opts ...grpc.CallOption) (*SendActivateEmailResp, error) {
+	client := pb.NewUserClient(m.cli.Conn())
+	return client.SendActivateEmail(ctx, in, opts...)
+}
+
 func (m *defaultUserZrpcClient) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error) {
 	client := pb.NewUserClient(m.cli.Conn())
 	return client.Login(ctx, in, opts...)
@@ -60,4 +71,9 @@ func (m *defaultUserZrpcClient) GetUserInfo(ctx context.Context, in *GetUserInfo
 func (m *defaultUserZrpcClient) GenerateToken(ctx context.Context, in *GenerateTokenReq, opts ...grpc.CallOption) (*GenerateTokenResp, error) {
 	client := pb.NewUserClient(m.cli.Conn())
 	return client.GenerateToken(ctx, in, opts...)
+}
+
+func (m *defaultUserZrpcClient) ActivateAccount(ctx context.Context, in *ActivateAccountReq, opts ...grpc.CallOption) (*ActivateAccountResp, error) {
+	client := pb.NewUserClient(m.cli.Conn())
+	return client.ActivateAccount(ctx, in, opts...)
 }

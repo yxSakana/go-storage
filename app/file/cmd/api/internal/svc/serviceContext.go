@@ -19,7 +19,7 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	r := redis.MustNewRedis(c.Redis)
+	r := redis.MustNewRedis(c.RedisConf)
 	return &ServiceContext{
 		Config: c,
 

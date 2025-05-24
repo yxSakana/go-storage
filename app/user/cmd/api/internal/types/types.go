@@ -3,6 +3,13 @@
 
 package types
 
+type ActivateReq struct {
+	VerifyToken string `form:"token"`
+}
+
+type ActivateResp struct {
+}
+
 type GetUserInfoReq struct {
 	UserId int64 `json:"user_id"`
 }
@@ -12,7 +19,7 @@ type GetUserInfoResp struct {
 }
 
 type LoginReq struct {
-	Mobile   string `json:"mobile"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
@@ -24,21 +31,23 @@ type LoginResp struct {
 }
 
 type RegisterReq struct {
-	Mobile   string `json:"mobile"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
 type RegisterResp struct {
-	UserId       int64  `json:"user_id"`
-	Token        string `json:"token"`
-	ExpireAfter  int64  `json:expire_after`
-	RefreshAfter int64  `json:refresh_after`
+}
+
+type ResendActivateEmailReq struct {
+	Email string `json:"email"`
+}
+
+type ResendActivateEmailResp struct {
 }
 
 type User struct {
 	Id       int64  `json:"id"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
-	Mobile   string `json:"mobile"`
 	Avatar   string `json:"avatar"`
 }

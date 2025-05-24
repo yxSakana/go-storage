@@ -39,7 +39,6 @@ func (l *DetailLogic) Detail(req *types.GetUserInfoReq) (resp *types.GetUserInfo
 			Id:       userInfoResp.Userinfo.Id,
 			Username: userInfoResp.Userinfo.Username,
 			Email:    userInfoResp.Userinfo.Email,
-			Mobile:   userInfoResp.Userinfo.Mobile,
 			Avatar:   userInfoResp.Userinfo.Avatar,
 		},
 	}, nil

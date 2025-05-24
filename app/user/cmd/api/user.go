@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"go-storage/pkg/response"
 
 	"go-storage/app/user/cmd/api/internal/config"
 	"go-storage/app/user/cmd/api/internal/handler"
 	"go-storage/app/user/cmd/api/internal/svc"
+	"go-storage/pkg/response"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"

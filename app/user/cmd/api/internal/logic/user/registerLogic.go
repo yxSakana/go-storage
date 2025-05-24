@@ -27,8 +27,8 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 }
 
 func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterResp, err error) {
-	registerResp, err := l.svcCtx.UserRpc.Register(l.ctx, &user.RegisterReq{
-		Mobile:   req.Mobile,
+	_, err = l.svcCtx.UserRpc.Register(l.ctx, &user.RegisterReq{
+		Email:    req.Email,
 		Password: req.Password,
 	})
 
@@ -36,10 +36,5 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 		return nil, fmt.Errorf("register: %w", err)
 	}
 
-	return &types.RegisterResp{
-		UserId:       registerResp.UserId,
-		Token:        registerResp.Token,
-		ExpireAfter:  registerResp.ExpireAfter,
-		RefreshAfter: registerResp.RefreshAfter,
-	}, nil
+	return &types.RegisterResp{}, nil
 }

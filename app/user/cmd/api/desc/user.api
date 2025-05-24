@@ -13,7 +13,7 @@ import (
 )
 
 @server (
-	prefix: /v1/user
+	prefix: api/v1/user
 	group:  user
 )
 service user {
@@ -21,13 +21,20 @@ service user {
 	@handler register
 	post /register (RegisterReq) returns (RegisterResp)
 
+	@doc "activate"
+	@handler activate
+	get /activate (ActivateReq) returns (ActivateResp)
+
 	@doc "login"
 	@handler login
 	post /login (LoginReq) returns (LoginResp)
+
+	@handler resendActivateEmail
+	get /register/resend-email (ResendActivateEmailReq) returns (ResendActivateEmailResp)
 }
 
 @server (
-	prefix: /v1/user
+	prefix: api/v1/user
 	group:  user
 	jwt:    JwtAuth
 )

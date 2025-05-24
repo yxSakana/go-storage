@@ -8,24 +8,18 @@ message User {
   int64 id = 1;
   string username = 2;
   string email = 3;
-  string mobile = 4;
-  string avatar = 5;
+  string avatar = 4;
 }
 
 // -- Req Resp --
 message RegisterReq {
-  string mobile = 1;
+  string email = 1;
   string password = 2;
 }
-message RegisterResp {
-  int64 userId = 1;
-  string token = 2;
-  int64 expireAfter = 3;
-  int64 refreshAfter = 4;
-}
+message RegisterResp {}
 
 message LoginReq {
-  string mobile = 1;
+  string email = 1;
   string password = 2;
 }
 message LoginResp {
@@ -51,10 +45,22 @@ message GenerateTokenResp {
   int64 refreshAfter = 3;
 }
 
+message ActivateAccountReq {
+  string verifyToken = 1;
+}
+message ActivateAccountResp {}
+
+message SendActivateEmailReq {
+  string email = 1;
+}
+message SendActivateEmailResp {}
+
 // -- service --
 service user {
   rpc register(RegisterReq) returns(RegisterResp);
+  rpc sendActivateEmail(SendActivateEmailReq) returns(SendActivateEmailResp);
   rpc login(LoginReq) returns(LoginResp);
   rpc getUserInfo(GetUserInfoReq) returns(GetUserInfoResp);
   rpc generateToken(GenerateTokenReq) returns(GenerateTokenResp);
+  rpc activateAccount(ActivateAccountReq) returns(ActivateAccountResp);
 }

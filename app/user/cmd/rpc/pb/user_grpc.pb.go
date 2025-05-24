@@ -19,10 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	User_Register_FullMethodName      = "/pb.user/register"
-	User_Login_FullMethodName         = "/pb.user/login"
-	User_GetUserInfo_FullMethodName   = "/pb.user/getUserInfo"
-	User_GenerateToken_FullMethodName = "/pb.user/generateToken"
+	User_Register_FullMethodName          = "/pb.user/register"
+	User_SendActivateEmail_FullMethodName = "/pb.user/sendActivateEmail"
+	User_Login_FullMethodName             = "/pb.user/login"
+	User_GetUserInfo_FullMethodName       = "/pb.user/getUserInfo"
+	User_GenerateToken_FullMethodName     = "/pb.user/generateToken"
+	User_ActivateAccount_FullMethodName   = "/pb.user/activateAccount"
 )
 
 // UserClient is the client API for User service.
@@ -32,9 +34,11 @@ const (
 // -- service --
 type UserClient interface {
 	Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error)
+	SendActivateEmail(ctx context.Context, in *SendActivateEmailReq, opts ...grpc.CallOption) (*SendActivateEmailResp, error)
 	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
 	GetUserInfo(ctx context.Context, in *GetUserInfoReq, opts ...grpc.CallOption) (*GetUserInfoResp, error)
 	GenerateToken(ctx context.Context, in *GenerateTokenReq, opts ...grpc.CallOption) (*GenerateTokenResp, error)
+	ActivateAccount(ctx context.Context, in *ActivateAccountReq, opts ...grpc.CallOption) (*ActivateAccountResp, error)
 }
 
 type userClient struct {
@@ -49,6 +53,16 @@ func (c *userClient) Register(ctx context.Context, in *RegisterReq, opts ...grpc
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RegisterResp)
 	err := c.cc.Invoke(ctx, User_Register_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) SendActivateEmail(ctx context.Context, in *SendActivateEmailReq, opts ...grpc.CallOption) (*SendActivateEmailResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SendActivateEmailResp)
+	err := c.cc.Invoke(ctx, User_SendActivateEmail_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -85,6 +99,16 @@ func (c *userClient) GenerateToken(ctx context.Context, in *GenerateTokenReq, op
 	return out, nil
 }
 
+func (c *userClient) ActivateAccount(ctx context.Context, in *ActivateAccountReq, opts ...grpc.CallOption) (*ActivateAccountResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ActivateAccountResp)
+	err := c.cc.Invoke(ctx, User_ActivateAccount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility.
@@ -92,9 +116,11 @@ func (c *userClient) GenerateToken(ctx context.Context, in *GenerateTokenReq, op
 // -- service --
 type UserServer interface {
 	Register(context.Context, *RegisterReq) (*RegisterResp, error)
+	SendActivateEmail(context.Context, *SendActivateEmailReq) (*SendActivateEmailResp, error)
 	Login(context.Context, *LoginReq) (*LoginResp, error)
 	GetUserInfo(context.Context, *GetUserInfoReq) (*GetUserInfoResp, error)
 	GenerateToken(context.Context, *GenerateTokenReq) (*GenerateTokenResp, error)
+	ActivateAccount(context.Context, *ActivateAccountReq) (*ActivateAccountResp, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -108,6 +134,9 @@ type UnimplementedUserServer struct{}
 func (UnimplementedUserServer) Register(context.Context, *RegisterReq) (*RegisterResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
+func (UnimplementedUserServer) SendActivateEmail(context.Context, *SendActivateEmailReq) (*SendActivateEmailResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendActivateEmail not implemented")
+}
 func (UnimplementedUserServer) Login(context.Context, *LoginReq) (*LoginResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
 }
@@ -116,6 +145,9 @@ func (UnimplementedUserServer) GetUserInfo(context.Context, *GetUserInfoReq) (*G
 }
 func (UnimplementedUserServer) GenerateToken(context.Context, *GenerateTokenReq) (*GenerateTokenResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenerateToken not implemented")
+}
+func (UnimplementedUserServer) ActivateAccount(context.Context, *ActivateAccountReq) (*ActivateAccountResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ActivateAccount not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 func (UnimplementedUserServer) testEmbeddedByValue()              {}
@@ -152,6 +184,24 @@ func _User_Register_Handler(srv interface{}, ctx context.Context, dec func(inter
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).Register(ctx, req.(*RegisterReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_SendActivateEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendActivateEmailReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).SendActivateEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_SendActivateEmail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).SendActivateEmail(ctx, req.(*SendActivateEmailReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -210,6 +260,24 @@ func _User_GenerateToken_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_ActivateAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ActivateAccountReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).ActivateAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_ActivateAccount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).ActivateAccount(ctx, req.(*ActivateAccountReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -222,6 +290,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _User_Register_Handler,
 		},
 		{
+			MethodName: "sendActivateEmail",
+			Handler:    _User_SendActivateEmail_Handler,
+		},
+		{
 			MethodName: "login",
 			Handler:    _User_Login_Handler,
 		},
@@ -232,6 +304,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "generateToken",
 			Handler:    _User_GenerateToken_Handler,
+		},
+		{
+			MethodName: "activateAccount",
+			Handler:    _User_ActivateAccount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
