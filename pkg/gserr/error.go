@@ -5,8 +5,10 @@ import (
 )
 
 type Error struct {
-	code uint32
-	msg  string
+	code   uint32
+	msg    string
+	reason string
+	stack  string
 }
 
 func New(code uint32, msg string) *Error {

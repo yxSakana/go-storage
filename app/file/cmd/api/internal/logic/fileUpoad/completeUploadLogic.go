@@ -2,6 +2,7 @@ package fileUpoad
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -16,6 +17,11 @@ import (
 	"go-storage/pkg/file"
 	"go-storage/pkg/gserr"
 )
+
+type MergeMessage struct {
+	FileHash string
+	UserId   uint64
+}
 
 type CompleteUploadLogic struct {
 	logx.Logger
@@ -49,24 +55,36 @@ func (l *CompleteUploadLogic) CompleteUpload(req *types.CompleteUploadReq) (resp
 		return nil, fmt.Errorf("%w: %s", gserr.ErrFileMetaUninitialized, req.FileHash)
 	}
 
-	meta, err := l.svcCtx.UploadManager.GetMeta(l.ctx, req.FileHash)
-	if err != nil {
-		return nil, fmt.Errorf("%w: get meta: %w", gserr.ErrAttachedMsgError, err)
-	}
 	// check the chunk flag saved in Redis
 	if !l.svcCtx.UploadManager.CanMerge(l.ctx, req.FileHash) {
 		return nil, fmt.Errorf("%w: file_hash: %s",
 			gserr.ErrFileIncompleteChunk, req.FileHash)
 	}
 
-	// 合并文件 && 验证hash
-	chunkDir := fmt.Sprintf(types.ChunkDirf, req.FileHash)
-	filePath := meta.FilePath
-	if err := mergeChunks(meta.ChunkCount, chunkDir, filePath); err != nil {
+	// kafka write
+	mess, err := json.Marshal(MergeMessage{
+		FileHash: req.FileHash,
+		UserId:   userId,
+	})
+	if err != nil {
 		return nil, err
 	}
-	if err := file.VerifyFileHash(filePath, meta.FileHash); err != nil {
+	m := string(mess)
+	if err := l.svcCtx.KPusherClient.Push(l.ctx, m); err != nil {
 		return nil, err
+	}
+	return &types.CompleteUploadResp{}, nil
+}
+
+func (l *CompleteUploadLogic) MergeChunks(meta *svc.UploadInfo, userId uint64) error {
+	// 合并文件 && 验证hash
+	chunkDir := fmt.Sprintf(types.ChunkDirf, meta.FileHash)
+	filePath := meta.FilePath
+	if err := mergeChunks(meta.ChunkCount, chunkDir, filePath); err != nil {
+		return err
+	}
+	if err := file.VerifyFileHash(filePath, meta.FileHash); err != nil {
+		return err
 	}
 	// Save to MySQL
 	if err := l.svcCtx.FileMetaModel.Trans(l.ctx, func(context context.Context, session sqlx.Session) error {
@@ -96,11 +114,11 @@ func (l *CompleteUploadLogic) CompleteUpload(req *types.CompleteUploadReq) (resp
 
 		return nil
 	}); err != nil {
-		return nil, fmt.Errorf("%w: Database: %w", gserr.ErrServerCommon, err)
+		return err
 	}
 
-	_ = l.svcCtx.UploadManager.CompletedMerge(l.ctx, req.FileHash)
-	return &types.CompleteUploadResp{}, nil
+	_ = l.svcCtx.UploadManager.CompletedMerge(l.ctx, meta.FileHash)
+	return nil
 }
 
 func mergeChunks(chunkCount int, chunkDir string, outputPath string) error {

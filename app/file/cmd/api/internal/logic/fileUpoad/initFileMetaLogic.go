@@ -49,7 +49,7 @@ func (l *InitFileMetaLogic) InitFileMeta(req *types.InitFileMetaReq) (resp *type
 		}
 	}
 
-	us := &svc.UploadState{
+	us := &svc.UploadInfo{
 		FileHash:   req.Hash,
 		FileSize:   req.FileSize,
 		ChunkSize:  req.ChunkSize,

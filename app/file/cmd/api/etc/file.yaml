@@ -39,3 +39,16 @@ Cache:
   - Host: 127.0.0.1:6379
     Pass: ""
     Type: node
+KqConsumerConf:
+  Name: "kqConsumer"
+  Brokers:
+    - 127.0.0.1:9092
+  Group: kqConsumer
+  Topic: "merge-file"
+  Offset: first
+  Consumers: 8
+  Processors: 8
+KqPusherConf:
+  Brokers:
+    - 127.0.0.1:9092
+  Topic: "merge-file"

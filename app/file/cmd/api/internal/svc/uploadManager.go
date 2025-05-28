@@ -15,7 +15,7 @@ const (
 	_expireSec int = 12 * 60 * 60
 )
 
-type UploadState struct {
+type UploadInfo struct {
 	FileHash   string
 	Filename   string
 	FileSize   uint64
@@ -25,7 +25,8 @@ type UploadState struct {
 	ChunkState []bool
 }
 
-func (us *UploadState) ToRedis() map[string]string {
+func (us *UploadInfo) ToRedis() map[string]string {
+	s := fmt.Sprintf("%t", us.ChunkState)
 	return map[string]string{
 		"fileHash":   us.FileHash,
 		"filename":   us.Filename,
@@ -33,11 +34,11 @@ func (us *UploadState) ToRedis() map[string]string {
 		"chunkSize":  fmt.Sprintf("%d", us.ChunkSize),
 		"chunkCount": fmt.Sprintf("%d", us.ChunkCount),
 		"filePath":   us.FilePath,
-		"chunkState": fmt.Sprintf("%t", us.ChunkState),
+		"chunkState": s[1 : len(s)-1],
 	}
 }
 
-func FromRedis(r map[string]string) *UploadState {
+func FromRedis(r map[string]string) *UploadInfo {
 	if r == nil {
 		return nil
 	}
@@ -48,7 +49,7 @@ func FromRedis(r map[string]string) *UploadState {
 	for i := 0; i < chunkCount; i++ {
 		chunkState[i] = r["chunkState"] == "true"
 	}
-	return &UploadState{
+	return &UploadInfo{
 		FileHash:   r["fileHash"],
 		Filename:   r["filename"],
 		FileSize:   fileSize,
@@ -60,9 +61,9 @@ func FromRedis(r map[string]string) *UploadState {
 }
 
 type UploadManager interface {
-	InitMeta(context.Context, UploadState) error
-	SetMeta(context.Context, UploadState) error
-	GetMeta(ctx context.Context, hash string) (*UploadState, error)
+	InitMeta(context.Context, UploadInfo) error
+	SetMeta(context.Context, UploadInfo) error
+	GetMeta(ctx context.Context, hash string) (*UploadInfo, error)
 	Exists(hash string) bool
 	CompletedChunk(ctx context.Context, hash string, chunkIndex int) error
 	CompletedMerge(ctx context.Context, hash string) error
@@ -80,18 +81,18 @@ func NewUploadManager(c *redis.Redis) UploadManager {
 
 var _ UploadManager = (*uploadManager)(nil)
 
-func (m *uploadManager) InitMeta(ctx context.Context, us UploadState) error {
+func (m *uploadManager) InitMeta(ctx context.Context, us UploadInfo) error {
 	us.ChunkState = make([]bool, us.ChunkCount)
 	return m.SetMeta(ctx, us) // todo:
 }
 
-func (m *uploadManager) SetMeta(ctx context.Context, us UploadState) (err error) {
+func (m *uploadManager) SetMeta(ctx context.Context, us UploadInfo) (err error) {
 	err = m.rdb.HmsetCtx(ctx, getMetaKey(us.FileHash), us.ToRedis())
 	_ = m.rdb.Expire(getMetaKey(us.FileHash), _expireSec)
 	return
 }
 
-func (m *uploadManager) GetMeta(ctx context.Context, hash string) (us *UploadState, err error) {
+func (m *uploadManager) GetMeta(ctx context.Context, hash string) (us *UploadInfo, err error) {
 	meta, err := m.rdb.HgetallCtx(ctx, getMetaKey(hash))
 	us = FromRedis(meta)
 	return

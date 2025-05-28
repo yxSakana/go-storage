@@ -35,7 +35,6 @@ func (l *DownloadRangeLogic) DownloadRange(req *types.DownloadRangeReq, w http.R
 	if err != nil {
 		return nil, err
 	}
-
 	file, err := os.Open(fileMetaRet.Path)
 	if err != nil {
 		return nil, err

@@ -4,11 +4,10 @@ import (
 	"context"
 	"fmt"
 	"github.com/zeromicro/go-zero/core/logx"
-
 	"go-storage/app/file/cmd/api/internal/svc"
 	"go-storage/app/file/cmd/api/internal/types"
 	"go-storage/pkg/file"
-	"go-storage/pkg/gserr"
+	"time"
 )
 
 type UploadChunkLogic struct {
@@ -35,22 +34,30 @@ func (l *UploadChunkLogic) UploadChunk(req *types.UploadChunkInput) (resp *types
 	// Save chunk file
 	chunkDir := fmt.Sprintf(types.ChunkDirf, req.FileHash)
 	chunkFilename := fmt.Sprintf("%s/%d.chunk", chunkDir, req.ChunkIndex)
-	err = file.SaveFileHeader(req.ChunkFileHeader, chunkFilename)
-	if err != nil {
-		return nil, fmt.Errorf("%w: write file %s: %v", gserr.ErrServerCommon, chunkFilename, err)
-	}
-	// verify file hash
-	chunkHash, err := file.CalculateHash(chunkFilename, "md5")
-	if err != nil {
-		return nil, fmt.Errorf("%w: calculate file hash: %v", gserr.ErrServerCommon, err)
-	}
-	if chunkHash != req.ChunkHash {
-		return nil, fmt.Errorf("%w: file hash %s is not equal to expected hash %s",
-			gserr.ErrFileHashIncomplete, chunkHash, req.ChunkHash)
-	}
+	if err := l.svcCtx.SaveChunkPool.Submit(func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*60*time.Second)
+		defer cancel()
 
-	// Set flag in Redis
-	if err := l.svcCtx.UploadManager.CompletedChunk(l.ctx, req.FileHash, req.ChunkIndex); err != nil {
+		if err := file.SaveFileHeader(req.ChunkFileHeader, chunkFilename); err != nil {
+			logx.Error(err)
+			return
+		}
+		// verify file hash
+		chunkHash, err := file.CalculateHash(chunkFilename, "md5")
+		if err != nil {
+			logx.Error(err)
+			return
+		}
+		if chunkHash != req.ChunkHash {
+			logx.Errorf("file hash %s is not equal to expected hash %s", chunkHash, req.ChunkHash)
+			return
+		}
+		// Set flag in Redis
+		if err := l.svcCtx.UploadManager.CompletedChunk(ctx, req.FileHash, req.ChunkIndex); err != nil {
+			logx.Error(err)
+			return
+		}
+	}); err != nil {
 		return nil, err
 	}
 
