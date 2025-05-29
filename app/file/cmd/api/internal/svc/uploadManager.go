@@ -27,6 +27,8 @@ type UploadInfo struct {
 
 func (us *UploadInfo) ToRedis() map[string]string {
 	s := fmt.Sprintf("%t", us.ChunkState)
+	t := s[1 : len(s)-1]
+	fmt.Printf("%s", t)
 	return map[string]string{
 		"fileHash":   us.FileHash,
 		"filename":   us.Filename,
@@ -46,8 +48,9 @@ func FromRedis(r map[string]string) *UploadInfo {
 	chunkSize, _ := strconv.ParseUint(r["chunkSize"], 10, 64)
 	chunkCount, _ := strconv.Atoi(r["chunkCount"])
 	chunkState := make([]bool, chunkCount)
+	cacheChunkStates := strings.Split(r["chunkState"], " ")
 	for i := 0; i < chunkCount; i++ {
-		chunkState[i] = r["chunkState"] == "true"
+		chunkState[i] = cacheChunkStates[i] == "true"
 	}
 	return &UploadInfo{
 		FileHash:   r["fileHash"],
